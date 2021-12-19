@@ -2,7 +2,8 @@ f = open('input.txt', 'r')
 readings = []
 for line in f:
     readings.append(int(line))
-
+    
+f.close()
 #print(readings)
 
 previous_reading = -1
