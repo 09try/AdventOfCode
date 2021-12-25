@@ -10,7 +10,7 @@ def get_points_of_line(p1, p2):
         m = numerator // denominator
 
         # y = mx + b
-        b = y1 - x1
+        b = y1 - m * x1
 
         x1_iter = x1
         x2_iter = x2
@@ -28,8 +28,6 @@ def get_points_of_line(p1, p2):
 
         for xs in range(x1_iter, x2_iter + 1):
             for ys in range(y1_iter, y2_iter + 1):
-                #print('{}, {}'.format(xs, ys))
-
                 t = m * xs + b
                 if ys == t:
                     output.append((xs, ys))
@@ -37,6 +35,7 @@ def get_points_of_line(p1, p2):
         return output
     else:
         return output
+
 
 if __name__ == '__main__':
     f = open('input.txt', 'r')
@@ -121,26 +120,23 @@ if __name__ == '__main__':
                     space[_y1][__x] += 1
 
         # diagonal line
-        numerator = _y2 - _y1
-        denominator = _x2 - _x1
-        if denominator != 0:
-            slope = numerator // denominator
-            if slope == 1:
-                points_of_line = get_points_of_line((_x1, _y1), (_x2, _y2))
-
-                if points_of_line != []:
-                    for point in points_of_line:
-                        current_x = point[0]
-                        current_y = point[1]
-                        if space[current_y][current_x] == '.':
-                            space[current_y][current_x] = 1
-                        else:
-                            space[current_y][current_x] += 1
-        else:
-            #print('division by zero')
-            pass
+        elif abs(_y2 - _y1) == abs(_x2 - _x1):
+            points_of_line = get_points_of_line((_x1, _y1), (_x2, _y2))
+            if points_of_line != []:
+                for point in points_of_line:
+                    current_x = point[0]
+                    current_y = point[1]
+                    if space[current_y][current_x] == '.':
+                        space[current_y][current_x] = 1
+                    else:
+                        space[current_y][current_x] += 1
+            else:
+                print('45 degree line without points')
+                print(_x1, _y1)
+                print(_x2, _y2)
         # end of diagonal line
 
+    # check how many points are overlaped
     c = 0
     for row in range(end_y + 1):
         for col in range(end_x + 1):
