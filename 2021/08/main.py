@@ -41,3 +41,78 @@ if __name__ == '__main__':
                 count += 1
                 
     print(count)
+    
+    
+    #  aaaa
+    # b    c
+    # b    c
+    #  dddd
+    # e    f 
+    # e    f
+    #  gggg
+    
+    for line in lines:
+        # get input values and output values        
+        first_part, second_part = line.replace('\n', '').split('|')
+        
+        # get digits in the input values
+        first_part_digits = first_part.split(' ')
+        
+        display = {}
+        # 0
+        display['abcefg'] = ''
+        # 1
+        display['cf'] = ''
+        # 2
+        display['acdeg'] = ''
+        # 3
+        display['acdfg'] = ''
+        # 4
+        display['bcdf'] = ''
+        # 5
+        display['abdfg'] = ''
+        # 6
+        display['abdefg'] = ''
+        # 7
+        display['acf'] = ''
+        # 8
+        display['abcdefg'] = ''
+        # 9
+        display['abcdfg'] = ''
+        
+        tmp = first_part_digits
+    
+        # loop through digits until all are decoded        
+        counter = 0
+        while tmp != []:
+            
+            digit = tmp[counter]
+            
+            if len(digit) == 2:
+                # number one
+                tmp.remove(digit)
+                display['cf'] = digit
+            elif len(digit) == 4:
+                # number four
+                tmp.remove(digit)
+                display['bcdf'] = digit
+            elif len(digit) == 3:
+                # number seven
+                tmp.remove(digit)
+                display['acf'] = digit
+            elif len(digit) == 7:
+                # number eight
+                tmp.remove(digit)
+                display['abcdfg'] = digit
+            
+            if counter == len(tmp) - 1:
+                counter = 0
+                
+            counter += 1
+            
+        # decode output values
+        
+        # get sum
+            
+        
+    
