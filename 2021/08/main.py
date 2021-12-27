@@ -16,7 +16,7 @@
 def create_mapping(first_part):
     
     # initial mapping
-    mapping = {}
+    current_mapping = {}
     # 'abcefg': 0
     # 'cf': 1
     # 'acdeg': 2
@@ -34,51 +34,89 @@ def create_mapping(first_part):
     # mapping['e'] = 4
     # mapping['f'] = 5
     # mapping['g'] = 6
-    mapping[0] = 'a'
-    mapping[1] = 'b'
-    mapping[2] = 'c'
-    mapping[3] = 'd'
-    mapping[4] = 'e'
-    mapping[5] = 'f'
-    mapping[6] = 'g'
+    current_mapping[0] = 'a'
+    current_mapping[1] = 'b'
+    current_mapping[2] = 'c'
+    current_mapping[3] = 'd'
+    current_mapping[4] = 'e'
+    current_mapping[5] = 'f'
+    current_mapping[6] = 'g'
     
-    
-    
-    already_replaced_chars = []
+    already_replaced_chars = {}
+    new_mapping = {}
     
     first_part_digits = first_part.split(' ')
     
+    first_part_digits = sorted(first_part_digits, key=len)
+    
+    four = ''
+    seven = ''
+    one = ''
+    
+    # rewrite for loop to while loop to get last two indexes of mapping
     for digit in first_part_digits:
         
         digit = sorted(digit)
         
         if len(digit) == 2:
             # number 1
-            already_replaced_chars.append(mapping[2])
-            already_replaced_chars.append(mapping[5])
-            mapping[2] = digit[0]
-            mapping[5] = digit[1]
-        elif len(digit) == 4:
-            # number 4
-            already_replaced_chars.append(mapping[1])
-            already_replaced_chars.append(mapping[3])
-            mapping[1] = digit[0]
-            mapping[3] = digit[3]
+            already_replaced_chars[2] = current_mapping[2]
+            already_replaced_chars[5] = current_mapping[5]
+            new_mapping[2] = digit[0]
+            new_mapping[5] = digit[1]
+            one = digit
         elif len(digit) == 3:
             # number 7
-            already_replaced_chars.append(mapping[6])
-            mapping[6] = digit[2]
+            already_replaced_chars[6] = current_mapping[6]
+            new_mapping[0] = digit[2]
+            seven = digit
+        elif len(digit) == 4:
+            # number 4
+            already_replaced_chars[1] = current_mapping[1]
+            already_replaced_chars[3] = current_mapping[3]
+            new_mapping[1] = digit[0]
+            new_mapping[3] = digit[3]
+            four = digit
+        elif len(digit) == 5:
+            # number 2, 3, 5
+            pass
+        elif len(digit) == 6:
+            # number 0, 6, 9
+            
+            chars_from_one = 0
+            
+            # number 9 is the same as 4 + 7 + one char which is not in 4 and 7
+            target = ''
+            index = 0
+            for i, c in enumerate(digit):
+                if c in four or c in seven:
+                    pass
+                else:
+                    target = c
+                    index = i
+                    
+                # number six doesnt have one char from number one
+                if c in one:
+                    chars_from_one += 1
+            
+            # number nine   
+            if target != '':
+                new_mapping[6] = digit[index]
+            # end of number nine
+            
+            # number six
+            if chars_from_one != 2:
+                print()
+                new_mapping[4] = digit[2]
+                
+            # end of number six
+            
+            
         elif len(digit) == 7:
             # number 8 is not helpful
             pass
-        elif len(digit) == 5:
-            # number 2, 3, 5
-            print()
-        elif len(digit) == 6:
-            # number 0, 6, 9
-            print()
-    
-    return mapping
+        
+    return new_mapping
 
 def get_displayed_number(segments, mapping):
     segments = ''.join(sorted(segments))
@@ -172,7 +210,10 @@ if __name__ == '__main__':
         for digit in second_part:
             if digit != '':
                 num = get_displayed_number(digit, mapping)
-                line_sum += num
+                if num != None:
+                    line_sum += num
+                else:
+                    print('error')
             
         total_sum += int(line_sum)
         
