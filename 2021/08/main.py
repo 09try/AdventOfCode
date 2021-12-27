@@ -5,17 +5,6 @@
 # 7 - acf
 # 8 - abcdefg
 
-# 'abcefg': 0
-# 'cf': 1
-# 'acdeg': 2
-# 'acdfg': 3
-# 'bcdf': 4
-# 'abdfg': 5
-# 'abdefg': 6
-# 'acf': 7
-# 'abcdefg': 8
-# 'abcdfg': 9
-
 #  aaaa
 # b    c
 # b    c
@@ -26,16 +15,68 @@
 
 def create_mapping(first_part):
     
+    # initial mapping
+    mapping = {}
+    # 'abcefg': 0
+    # 'cf': 1
+    # 'acdeg': 2
+    # 'acdfg': 3
+    # 'bcdf': 4
+    # 'abdfg': 5
+    # 'abdefg': 6
+    # 'acf': 7
+    # 'abcdefg': 8
+    # 'abcdfg': 9
+    # mapping['a'] = 0
+    # mapping['b'] = 1
+    # mapping['c'] = 2
+    # mapping['d'] = 3
+    # mapping['e'] = 4
+    # mapping['f'] = 5
+    # mapping['g'] = 6
+    mapping[0] = 'a'
+    mapping[1] = 'b'
+    mapping[2] = 'c'
+    mapping[3] = 'd'
+    mapping[4] = 'e'
+    mapping[5] = 'f'
+    mapping[6] = 'g'
+    
+    
+    
+    already_replaced_chars = []
+    
     first_part_digits = first_part.split(' ')
     
-    mapping = {}
-    mapping['a'] = 0
-    mapping['b'] = 1
-    mapping['c'] = 2
-    mapping['d'] = 3
-    mapping['e'] = 4
-    mapping['f'] = 5
-    mapping['g'] = 6
+    for digit in first_part_digits:
+        
+        digit = sorted(digit)
+        
+        if len(digit) == 2:
+            # number 1
+            already_replaced_chars.append(mapping[2])
+            already_replaced_chars.append(mapping[5])
+            mapping[2] = digit[0]
+            mapping[5] = digit[1]
+        elif len(digit) == 4:
+            # number 4
+            already_replaced_chars.append(mapping[1])
+            already_replaced_chars.append(mapping[3])
+            mapping[1] = digit[0]
+            mapping[3] = digit[3]
+        elif len(digit) == 3:
+            # number 7
+            already_replaced_chars.append(mapping[6])
+            mapping[6] = digit[2]
+        elif len(digit) == 7:
+            # number 8 is not helpful
+            pass
+        elif len(digit) == 5:
+            # number 2, 3, 5
+            print()
+        elif len(digit) == 6:
+            # number 0, 6, 9
+            print()
     
     return mapping
 
@@ -57,7 +98,10 @@ def get_displayed_number(segments, mapping):
     
     output = [False, False, False, False, False, False, False]
     for segment in segments:
-        output[mapping[segment]] = True
+        # rewrite according to new mapping
+        for index, char in mapping.items():
+            if char == segment:
+                output[index] = True
     
     if output == zero:
         return '0'
