@@ -17,23 +17,6 @@ def create_mapping(first_part):
     
     # initial mapping
     current_mapping = {}
-    # 'abcefg': 0
-    # 'cf': 1
-    # 'acdeg': 2
-    # 'acdfg': 3
-    # 'bcdf': 4
-    # 'abdfg': 5
-    # 'abdefg': 6
-    # 'acf': 7
-    # 'abcdefg': 8
-    # 'abcdfg': 9
-    # mapping['a'] = 0
-    # mapping['b'] = 1
-    # mapping['c'] = 2
-    # mapping['d'] = 3
-    # mapping['e'] = 4
-    # mapping['f'] = 5
-    # mapping['g'] = 6
     current_mapping[0] = 'a'
     current_mapping[1] = 'b'
     current_mapping[2] = 'c'
@@ -42,16 +25,21 @@ def create_mapping(first_part):
     current_mapping[5] = 'f'
     current_mapping[6] = 'g'
     
-    already_replaced_chars = {}
     new_mapping = {}
     
     first_part_digits = first_part.split(' ')
-    
     first_part_digits = sorted(first_part_digits, key=len)
-    
-    four = ''
-    seven = ''
+
+    zero = ''
     one = ''
+    two = ''
+    three = ''
+    four = ''
+    five = ''
+    six = ''
+    seven = ''
+    eight = ''
+    nine = ''
     
     # rewrite for loop to while loop to get last two indexes of mapping
     for digit in first_part_digits:
@@ -60,61 +48,114 @@ def create_mapping(first_part):
         
         if len(digit) == 2:
             # number 1
-            already_replaced_chars[2] = current_mapping[2]
-            already_replaced_chars[5] = current_mapping[5]
+            # possible error - switch 2 and 5 later when chars for number 2 and 5 are known
             new_mapping[2] = digit[0]
             new_mapping[5] = digit[1]
             one = digit
         elif len(digit) == 3:
             # number 7
-            already_replaced_chars[6] = current_mapping[6]
-            new_mapping[0] = digit[2]
+            for d in digit:
+                if d not in new_mapping.values():
+                    new_mapping[0] = d
             seven = digit
         elif len(digit) == 4:
             # number 4
-            already_replaced_chars[1] = current_mapping[1]
-            already_replaced_chars[3] = current_mapping[3]
-            new_mapping[1] = digit[0]
-            new_mapping[3] = digit[3]
+            # possible error - switch 3 and 1
+            for d in digit:
+                if d not in new_mapping.values():
+                    new_mapping[1] = d
+                    break
+
+            for d in digit:
+                if d not in new_mapping.values():
+                    new_mapping[3] = d
+                    break
+                
             four = digit
         elif len(digit) == 5:
             # number 2, 3, 5
-            pass
+
+            # number 3 has all chars from number 1
+            # numbers 2 and 5 don't have one char from number 1
+            chars_occuring_in_1_counter = 0
+            chars_occuring_in_4_counter = 0
+            
+            target = ''
+            for c in digit:
+                if c in one:
+                    chars_occuring_in_1_counter += 1
+                    
+                for _c in four:
+                    if c == _c:
+                        chars_occuring_in_4_counter += 1
+                    
+            # it is number 3 if True    
+            if chars_occuring_in_1_counter == 2:
+                three = digit
+                
+                # correction of number 4 chars
+                for c in three:
+                    for _c in four:
+                        if c == _c and c not in one:
+                            # new_mapping[1] = new_mapping[3]
+                            new_mapping[3] = c
+                            break
+                
+            # number 5 has three same chars as number 4
+            if chars_occuring_in_4_counter == 3 and chars_occuring_in_1_counter == 1:
+                five = digit
+                
+                # correction of number 1 chars
+                for c in five:
+                    for _c in one:
+                        if c == _c:
+                            new_mapping[5] = c
+                            break
+                
+            # number 2 has two chars in common with number 4 and one char with number 1
+            if chars_occuring_in_4_counter == 2 and chars_occuring_in_1_counter == 1:
+                two = digit
+                
+                # correction of number 1 chars
+                for c in two:
+                    for _c in one:
+                        if c == _c:
+                            new_mapping[2] = c
+                            break
+                
         elif len(digit) == 6:
             # number 0, 6, 9
             
-            chars_from_one = 0
+            chars_occuring_in_one_counter = 0
             
             # number 9 is the same as 4 + 7 + one char which is not in 4 and 7
             target = ''
-            index = 0
-            for i, c in enumerate(digit):
+            for c in digit:
                 if c in four or c in seven:
                     pass
                 else:
                     target = c
-                    index = i
                     
-                # number six doesnt have one char from number one
+                # number six doesn't have one char from number one
                 if c in one:
-                    chars_from_one += 1
+                    chars_occuring_in_one_counter += 1
             
             # number nine   
-            if target != '':
-                new_mapping[6] = digit[index]
-            # end of number nine
+            if target != '' and nine == '':
+                new_mapping[6] = target
+                nine = digit
             
             # number six
-            if chars_from_one != 2:
-                print()
+            if chars_occuring_in_one_counter != 2:
                 new_mapping[4] = digit[2]
+                six = digit
                 
-            # end of number six
+            # number zero
             
             
         elif len(digit) == 7:
             # number 8 is not helpful
-            pass
+            eight = digit
         
     return new_mapping
 
@@ -140,6 +181,7 @@ def get_displayed_number(segments, mapping):
         for index, char in mapping.items():
             if char == segment:
                 output[index] = True
+                break
     
     if output == zero:
         return '0'
@@ -192,13 +234,40 @@ if __name__ == '__main__':
                 count += 1
 
     print(count)
-    if count != expected:
+    if count == expected:
+        print('ok')
+    else:
         print('error')
+        
+        
+    line = 'acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf'
+    expected = 5353
+    first_part, second_part = line.replace('\n', '').split('|')
+    
+    # create mapping from the first part
+    mapping = create_mapping(first_part)
+        
+    # gut number for the sum from the second part
+    line_sum = ''
+    second_part = second_part.split(' ')
+    for digit in second_part:
+        if digit != '':
+            num = get_displayed_number(digit, mapping)
+            if num != None:
+                line_sum += num
+            else:
+                print('error')
+    
+    if int(line_sum) == expected:
+        print('ok')
+    else:
+        print('error')
+        
     
     total_sum = 0
     for line in lines:
         
-        # get input values and output values        
+        # get input values and output values
         first_part, second_part = line.replace('\n', '').split('|')
         
         # create mapping from the first part
@@ -219,6 +288,3 @@ if __name__ == '__main__':
         
     print(total_sum)
         
-            
-        
-    
