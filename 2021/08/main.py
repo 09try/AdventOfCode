@@ -41,7 +41,6 @@ def create_mapping(first_part):
     eight = ''
     nine = ''
     
-    # rewrite for loop to while loop to get last two indexes of mapping
     for digit in first_part_digits:
         
         digit = sorted(digit)
