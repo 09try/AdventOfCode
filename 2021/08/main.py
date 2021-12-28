@@ -48,19 +48,19 @@ def create_mapping(first_part):
         
         if len(digit) == 2:
             # number 1
-            # possible error - switch 2 and 5 later when chars for number 2 and 5 are known
+            # possible error - maybe switch index 2 and index 5 later when chars for number 2 and 5 are known
             new_mapping[2] = digit[0]
             new_mapping[5] = digit[1]
             one = digit
         elif len(digit) == 3:
             # number 7
             for d in digit:
-                if d not in new_mapping.values():
+                if d not in one:
                     new_mapping[0] = d
             seven = digit
         elif len(digit) == 4:
             # number 4
-            # possible error - switch 3 and 1
+            # possible error - maybe switch index 1 and index 3 later when chars for number 3 are known
             for d in digit:
                 if d not in new_mapping.values():
                     new_mapping[1] = d
@@ -85,60 +85,52 @@ def create_mapping(first_part):
                 if c in one:
                     chars_occuring_in_1_counter += 1
                     
-                for _c in four:
-                    if c == _c:
-                        chars_occuring_in_4_counter += 1
+                if c in four:
+                    chars_occuring_in_4_counter += 1
                     
             # it is number 3 if True    
             if chars_occuring_in_1_counter == 2:
                 three = digit
                 
                 # correction of number 4 chars
-                for c in three:
-                    for _c in four:
-                        if c == _c and c not in one:
-                            # new_mapping[1] = new_mapping[3]
-                            new_mapping[3] = c
-                            break
-                
+                for c in four:
+                    if c not in three:
+                        new_mapping[1] = c
+                        
+                    if c in three and c not in one:
+                        new_mapping[3] = c
+                         
             # number 5 has three same chars as number 4
             if chars_occuring_in_4_counter == 3 and chars_occuring_in_1_counter == 1:
                 five = digit
-                
-                # correction of number 1 chars
-                for c in five:
-                    for _c in one:
-                        if c == _c:
-                            new_mapping[5] = c
-                            break
                 
             # number 2 has two chars in common with number 4 and one char with number 1
             if chars_occuring_in_4_counter == 2 and chars_occuring_in_1_counter == 1:
                 two = digit
                 
-                # correction of number 1 chars
-                for c in two:
-                    for _c in one:
-                        if c == _c:
-                            new_mapping[2] = c
-                            break
-                
+            # correction of number 1 chars
+            if two != '' and five != '':
+                for c in one:
+                    if c in two:
+                        new_mapping[2] = c
+                        
+                    if c in five:
+                        new_mapping[5] = c
+            
         elif len(digit) == 6:
             # number 0, 6, 9
             
-            chars_occuring_in_one_counter = 0
+            chars_occuring_in_1_counter = 0
             
             # number 9 is the same as 4 + 7 + one char which is not in 4 and 7
             target = ''
             for c in digit:
-                if c in four or c in seven:
-                    pass
-                else:
+                if c not in four and not c in seven:
                     target = c
                     
                 # number six doesn't have one char from number one
                 if c in one:
-                    chars_occuring_in_one_counter += 1
+                    chars_occuring_in_1_counter += 1
             
             # number nine   
             if target != '' and nine == '':
@@ -146,8 +138,13 @@ def create_mapping(first_part):
                 nine = digit
             
             # number six
-            if chars_occuring_in_one_counter != 2:
-                new_mapping[4] = digit[2]
+            if chars_occuring_in_1_counter != 2:
+                #new_mapping[4] = digit[2]
+                
+                for d in digit:
+                    if d not in new_mapping.values():
+                        new_mapping[4] = d
+                        break
                 six = digit
                 
             # number zero
@@ -264,27 +261,27 @@ if __name__ == '__main__':
         print('error')
         
     
-    total_sum = 0
-    for line in lines:
+    # total_sum = 0
+    # for line in lines:
         
-        # get input values and output values
-        first_part, second_part = line.replace('\n', '').split('|')
+    #     # get input values and output values
+    #     first_part, second_part = line.replace('\n', '').split('|')
         
-        # create mapping from the first part
-        mapping = create_mapping(first_part)
+    #     # create mapping from the first part
+    #     mapping = create_mapping(first_part)
             
-        # gut number for the sum from the second part
-        line_sum = ''
-        second_part = second_part.split(' ')
-        for digit in second_part:
-            if digit != '':
-                num = get_displayed_number(digit, mapping)
-                if num != None:
-                    line_sum += num
-                else:
-                    print('error')
+    #     # gut number for the sum from the second part
+    #     line_sum = ''
+    #     second_part = second_part.split(' ')
+    #     for digit in second_part:
+    #         if digit != '':
+    #             num = get_displayed_number(digit, mapping)
+    #             if num != None:
+    #                 line_sum += num
+    #             else:
+    #                 print('error')
             
-        total_sum += int(line_sum)
+    #     total_sum += int(line_sum)
         
-    print(total_sum)
+    # print(total_sum)
         
