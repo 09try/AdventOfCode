@@ -125,7 +125,7 @@ def create_mapping(first_part):
             # number 9 is the same as 4 + 7 + one char which is not in 4 and 7
             target = ''
             for c in digit:
-                if c not in four and not c in seven:
+                if c not in four and c not in seven:
                     target = c
                     
                 # number six doesn't have one char from number one
