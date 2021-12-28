@@ -122,33 +122,43 @@ def create_mapping(first_part):
             
             chars_occuring_in_1_counter = 0
             
-            # number 9 is the same as 4 + 7 + one char which is not in 4 and 7
-            target = ''
             for c in digit:
-                if c not in four and c not in seven:
-                    target = c
-                    
                 # number six doesn't have one char from number one
                 if c in one:
                     chars_occuring_in_1_counter += 1
             
-            # number nine   
-            if target != '' and nine == '':
-                new_mapping[6] = target
-                nine = digit
-            
             # number six
-            if chars_occuring_in_1_counter != 2:
-                #new_mapping[4] = digit[2]
-                
-                for d in digit:
-                    if d not in new_mapping.values():
-                        new_mapping[4] = d
-                        break
+            if chars_occuring_in_1_counter == 1:
                 six = digit
                 
+                for d in six:
+                    if d not in five:
+                        new_mapping[4] = d
+                        break
+                
+            # number nine
+            # number four has all characters from nine
+            chars_occuring_in_4_counter = 0
+            chars_occuring_in_7_counter = 0
+            for c in four:
+                if c in digit:
+                    chars_occuring_in_4_counter += 1
+                    
+            for c in seven:
+                if c in digit:
+                    chars_occuring_in_7_counter += 1
+                    
+            if chars_occuring_in_4_counter == len(four) and chars_occuring_in_7_counter == len(seven):
+                nine = digit
+                
+                for d in nine:
+                    if d not in four and d not in seven:
+                        new_mapping[6] = d
+                        break
+                
             # number zero
-            
+            if nine == '' and six == '':
+                zero = digit
             
         elif len(digit) == 7:
             # number 8 is not helpful
@@ -261,27 +271,27 @@ if __name__ == '__main__':
         print('error')
         
     
-    # total_sum = 0
-    # for line in lines:
+    total_sum = 0
+    for line in lines:
         
-    #     # get input values and output values
-    #     first_part, second_part = line.replace('\n', '').split('|')
+        # get input values and output values
+        first_part, second_part = line.replace('\n', '').split('|')
         
-    #     # create mapping from the first part
-    #     mapping = create_mapping(first_part)
+        # create mapping from the first part
+        mapping = create_mapping(first_part)
             
-    #     # gut number for the sum from the second part
-    #     line_sum = ''
-    #     second_part = second_part.split(' ')
-    #     for digit in second_part:
-    #         if digit != '':
-    #             num = get_displayed_number(digit, mapping)
-    #             if num != None:
-    #                 line_sum += num
-    #             else:
-    #                 print('error')
+        # gut number for the sum from the second part
+        line_sum = ''
+        second_part = second_part.split(' ')
+        for digit in second_part:
+            if digit != '':
+                num = get_displayed_number(digit, mapping)
+                if num != None:
+                    line_sum += num
+                else:
+                    print('error')
             
-    #     total_sum += int(line_sum)
+        total_sum += int(line_sum)
         
-    # print(total_sum)
+    print(total_sum)
         
