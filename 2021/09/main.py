@@ -1,6 +1,3 @@
-from os import cpu_count
-
-
 def get_area(path):
     f = open(path, 'r')
     lines = f.readlines()
@@ -50,10 +47,7 @@ def get_risk_level(area):
 def check_basin(area, row, col, already_checked_points):
     
     current_basin = []
-    
-    examining_point = area[row][col]
-    
-    #print('point {} at row {}, col {}'.format(examining_point, row, col))
+    #print('point {} at row {}, col {}'.format(area[row][col], row, col))
 
     low_point_row_for_up = row - 1
     low_point_row_for_down = row + 1
@@ -182,8 +176,6 @@ def get_three_largest_basins(area):
                 
                 basins.append(len(current_basin))
 
-
-    
     three_largest_basins = sorted(basins)[-3:]
     
     return three_largest_basins[0] * three_largest_basins[1] * three_largest_basins[2]
