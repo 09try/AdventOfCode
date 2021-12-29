@@ -172,7 +172,6 @@ def get_three_largest_basins(area):
     
     return three_largest_basins[0] * three_largest_basins[1] * three_largest_basins[2]
     
-
 if __name__ == '__main__':
     
     expected = 15
