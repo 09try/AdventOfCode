@@ -53,7 +53,7 @@ def check_basin(area, row, col, already_checked_points):
     
     examining_point = area[row][col]
     
-    print('point {} at row {}, col {}'.format(examining_point, row, col))
+    #print('point {} at row {}, col {}'.format(examining_point, row, col))
 
     low_point_row_for_up = row - 1
     low_point_row_for_down = row + 1
@@ -81,8 +81,8 @@ def check_basin(area, row, col, already_checked_points):
             low_point_row_for_up -= 1
     
     # down
-    if low_point_row_for_down < len(area) - 1:
-        while low_point_row_for_down != (len(area) - 1):
+    if low_point_row_for_down < len(area):
+        while low_point_row_for_down != len(area):
             point = area[low_point_row_for_down][col]
             
             if (low_point_row_for_down, col) in already_checked_points:
@@ -215,3 +215,6 @@ if __name__ == '__main__':
         print('ok')
     else:
         print('error')
+        
+    result = get_three_largest_basins(area)
+    print(result)
