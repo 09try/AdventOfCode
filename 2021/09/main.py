@@ -192,13 +192,10 @@ if __name__ == '__main__':
     else:
         print('error')
         
-    expected = 1134
-    result = get_three_largest_basins(test_area)
-    print(result)
-    if result == expected:
-        print('ok')
-    else:
-        print('error')
-        
-    
-    
+    # expected = 1134
+    # result = get_three_largest_basins(test_area)
+    # print(result)
+    # if result == expected:
+    #     print('ok')
+    # else:
+    #     print('error')
