@@ -50,6 +50,8 @@ def get_risk_level(area):
 def check_basin(area, row, col, low_point_row, low_point_col):
     
     current_basin = []
+    
+    examining_point = area[row][col]
 
     low_point_row_for_up = row - 1
     low_point_row_for_down = row + 1
@@ -59,58 +61,70 @@ def check_basin(area, row, col, low_point_row, low_point_col):
     # up
     if low_point_row_for_up != -1:
         while low_point_row_for_up != 0:
-            if low_point_row_for_up != low_point_row and col != low_point_col:
-                point = area[low_point_row_for_up][col]
-                if point != 9:
-                    current_basin.append(point)
-                    t = check_basin(area, low_point_row_for_up, col, low_point_row, low_point_col)
-                    if t != []:
-                        current_basin = current_basin + t
-                else:
-                    break
+            point = area[low_point_row_for_up][col]
+            
+            if low_point_row_for_up == low_point_row and col == low_point_col:
+                break
+            
+            if point != 9:
+                current_basin.append(point)
+                t = check_basin(area, low_point_row_for_up, col, low_point_row, low_point_col)
+                if t != []:
+                    current_basin = current_basin + t
+            else:
+                break
             low_point_row_for_up -= 1
     
     # down
     if low_point_row_for_down < len(area) - 1:
         while low_point_row_for_down != (len(area) - 1):
-            if low_point_row_for_up != low_point_row and col != low_point_col:
-                point = area[low_point_row_for_down][col]
-                if point != 9:
-                    current_basin.append(point)
-                    t = check_basin(area, low_point_row_for_down, col, low_point_row, low_point_col)
-                    if t != []:
-                        current_basin = current_basin + t
-                else:
-                    break
+            point = area[low_point_row_for_down][col]
+            
+            if low_point_row_for_down == low_point_row and col == low_point_col:
+                break
+            
+            if point != 9:
+                current_basin.append(point)
+                t = check_basin(area, low_point_row_for_down, col, low_point_row, low_point_col)
+                if t != []:
+                    current_basin = current_basin + t
+            else:
+                break
             low_point_row_for_down += 1
             
     # left 
     if low_point_col_for_left != -1:
         while low_point_col_for_left != -1:
-            if low_point_row_for_up != low_point_row and col != low_point_col:
-                point = area[row][low_point_col_for_left]
-                if point != 9:
-                    current_basin.append(point)
-                    t = check_basin(area, row, low_point_col_for_left, low_point_row, low_point_col)
-                    if t != []:
-                        current_basin = current_basin + t
-                else:
-                    break
+            point = area[row][low_point_col_for_left]
+            
+            if row == low_point_row and low_point_col_for_left == low_point_col:
+                break
+            
+            if point != 9:
+                current_basin.append(point)
+                t = check_basin(area, row, low_point_col_for_left, low_point_row, low_point_col)
+                if t != []:
+                    current_basin = current_basin + t
+            else:
+                break
             low_point_col_for_left -= 1
     
     # right
     if low_point_col_for_right != len(area[row]) - 1:
         # check value after !=
         while low_point_col_for_right != len(area[row]):
-            if low_point_row_for_up != low_point_row and col != low_point_col:
-                point = area[row][low_point_col_for_right]
-                if point != 9:
-                    current_basin.append(point)
-                    t = check_basin(area, row, low_point_col_for_right, low_point_row, low_point_col)
-                    if t != []:
-                        current_basin = current_basin + t
-                else:
-                    break
+            point = area[row][low_point_col_for_right]
+            
+            if row == low_point_row and low_point_col_for_right == low_point_col:
+                break
+            
+            if point != 9:
+                current_basin.append(point)
+                t = check_basin(area, row, low_point_col_for_right, low_point_row, low_point_col)
+                if t != []:
+                    current_basin = current_basin + t
+            else:
+                break
             low_point_col_for_right += 1
             
     return current_basin
@@ -179,13 +193,13 @@ if __name__ == '__main__':
     else:
         print('error')
         
-    # expected = 1134
-    # result = get_three_largest_basins(test_area)
-    # print(result)
-    # if result == expected:
-    #     print('ok')
-    # else:
-    #     print('error')
+    expected = 1134
+    result = get_three_largest_basins(test_area)
+    print(result)
+    if result == expected:
+        print('ok')
+    else:
+        print('error')
         
     
     
