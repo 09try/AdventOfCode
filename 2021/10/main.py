@@ -20,7 +20,7 @@ def get_score(lines, score_table):
                 opened_chunks.append(c)
             elif c == ')':
                 if opened_chunks[-1] != '(':
-                    print('wrong c', i, line_number)
+                    #print('wrong c', i, line_number)
                     error_chars.append(c)
                     break
                 else:
@@ -29,7 +29,7 @@ def get_score(lines, score_table):
                 opened_chunks.append(c)
             elif c == ']':
                 if opened_chunks[-1] != '[':
-                    print('wrong c', i, line_number)
+                    #print('wrong c', i, line_number)
                     error_chars.append(c)
                     break
                 else:
@@ -38,7 +38,7 @@ def get_score(lines, score_table):
                 opened_chunks.append(c)
             elif c == '}':
                 if opened_chunks[-1] != '{':
-                    print('wrong c', i, line_number)
+                    #print('wrong c', i, line_number)
                     error_chars.append(c)
                     break
                 else:
@@ -47,7 +47,7 @@ def get_score(lines, score_table):
                 opened_chunks.append(c)
             elif c == '>':
                 if opened_chunks[-1] != '<':
-                    print('wrong c', i, line_number)
+                    #print('wrong c', i, line_number)
                     error_chars.append(c)
                     break
                 else:
@@ -76,6 +76,10 @@ if __name__ == '__main__':
     else:
         print('error')
         
+    expected = 399153
     lines = get_lines('input.txt')
     score = get_score(lines, score_table)
-    print(score)
+    if score == expected:
+        print('ok')
+    else:
+        print('error')
