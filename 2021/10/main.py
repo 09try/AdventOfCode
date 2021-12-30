@@ -7,47 +7,55 @@ def get_lines(path):
 
 def get_score(lines, score_table):
     score = 0
-    
-    # chars = {}
-    # chars['('] = 0
-    # chars[')'] = 0 
-    # chars['['] = 0 
-    # chars[']'] = 0
-    # chars['{'] = 0
-    # chars['}'] = 0
-    # chars['<'] = 0
-    # chars['>'] = 0
-    
-    # 0 ()
-    # 1 []
-    # 2 {}
-    # 3 <>
-    chars = [0, 0, 0, 0]
-    previous_char = ''
-    
-    for line in lines:
+
+    error_chars = []
+
+    for line_number, line in enumerate(lines):
+        
+        opened_chunks = []
+        
         for i, c in enumerate(line):
             
             if c == '(':
-                chars[0] += 1
+                opened_chunks.append(c)
             elif c == ')':
-                chars[0] -= 1
+                if opened_chunks[-1] != '(':
+                    print('wrong c', i, line_number)
+                    error_chars.append(c)
+                    break
+                else:
+                    opened_chunks.pop()
             elif c == '[':
-                chars[1] += 1
+                opened_chunks.append(c)
             elif c == ']':
-                chars[1] -= 1
+                if opened_chunks[-1] != '[':
+                    print('wrong c', i, line_number)
+                    error_chars.append(c)
+                    break
+                else:
+                    opened_chunks.pop()
             elif c == '{':
-                chars[2] += 1
+                opened_chunks.append(c)
             elif c == '}':
-                chars[2] -= 1
+                if opened_chunks[-1] != '{':
+                    print('wrong c', i, line_number)
+                    error_chars.append(c)
+                    break
+                else:
+                    opened_chunks.pop()
             elif c == '<':
-                chars[3] += 1
+                opened_chunks.append(c)
             elif c == '>':
-                chars[3] -= 1
+                if opened_chunks[-1] != '<':
+                    print('wrong c', i, line_number)
+                    error_chars.append(c)
+                    break
+                else:
+                    opened_chunks.pop()
                 
             previous_char = c
-
-    print()
+        
+    score = sum([score_table[s] for s in error_chars])
         
     return score
 
@@ -67,3 +75,7 @@ if __name__ == '__main__':
         print('ok')
     else:
         print('error')
+        
+    lines = get_lines('input.txt')
+    score = get_score(lines, score_table)
+    print(score)
