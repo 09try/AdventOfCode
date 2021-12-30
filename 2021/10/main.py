@@ -8,20 +8,17 @@ def get_lines(path):
 def get_score(lines, score_table):
     score = 0
 
-    error_chars = []
-
-    for line_number, line in enumerate(lines):
+    for line in lines:
         
         opened_chunks = []
         
-        for i, c in enumerate(line):
+        for c in line:
             
             if c == '(':
                 opened_chunks.append(c)
             elif c == ')':
                 if opened_chunks[-1] != '(':
-                    #print('wrong c', i, line_number)
-                    error_chars.append(c)
+                    score += score_table[c]
                     break
                 else:
                     opened_chunks.pop()
@@ -29,8 +26,7 @@ def get_score(lines, score_table):
                 opened_chunks.append(c)
             elif c == ']':
                 if opened_chunks[-1] != '[':
-                    #print('wrong c', i, line_number)
-                    error_chars.append(c)
+                    score += score_table[c]
                     break
                 else:
                     opened_chunks.pop()
@@ -38,8 +34,7 @@ def get_score(lines, score_table):
                 opened_chunks.append(c)
             elif c == '}':
                 if opened_chunks[-1] != '{':
-                    #print('wrong c', i, line_number)
-                    error_chars.append(c)
+                    score += score_table[c]
                     break
                 else:
                     opened_chunks.pop()
@@ -47,16 +42,11 @@ def get_score(lines, score_table):
                 opened_chunks.append(c)
             elif c == '>':
                 if opened_chunks[-1] != '<':
-                    #print('wrong c', i, line_number)
-                    error_chars.append(c)
+                    score += score_table[c]
                     break
                 else:
                     opened_chunks.pop()
                 
-            previous_char = c
-        
-    score = sum([score_table[s] for s in error_chars])
-        
     return score
 
 if __name__ == '__main__':
@@ -66,7 +56,6 @@ if __name__ == '__main__':
     score_table[']'] = 57
     score_table['}'] = 1197
     score_table['>'] = 25137
-    
     
     expected = 26397
     lines = get_lines('test_input.txt')
