@@ -5,7 +5,7 @@ def get_lines(path):
     lines = [line.replace('\n', '') for line in lines]
     return lines
 
-def get_score(lines, score_table):
+def get_corrupted_lines_score(lines, score_table):
     score = 0
 
     for line in lines:
@@ -95,26 +95,69 @@ def get_incomplete_lines_score(lines, score_table):
         if is_error_line == False:
             incomplete_lines.append(line)
             
-    completion_strings = []
+    scores = []
     
     for line in incomplete_lines:
-        current_completion_string = ''
-    
-        # do stuff
-    
-        completion_strings.append(current_completion_string)
-    
-    scores = []
-    for s in completion_strings:
+        opened_chunks = []
+        
+        for c in line:
+            
+            if c == '(':
+                opened_chunks.append(c)
+            elif c == ')':
+                if opened_chunks[-1] != '(':
+                    is_error_line = True
+                    break
+                else:
+                    opened_chunks.pop()
+            elif c == '[':
+                opened_chunks.append(c)
+            elif c == ']':
+                if opened_chunks[-1] != '[':
+                    is_error_line = True
+                    break
+                else:
+                    opened_chunks.pop()
+            elif c == '{':
+                opened_chunks.append(c)
+            elif c == '}':
+                if opened_chunks[-1] != '{':
+                    is_error_line = True
+                    break
+                else:
+                    opened_chunks.pop()
+            elif c == '<':
+                opened_chunks.append(c)
+            elif c == '>':
+                if opened_chunks[-1] != '<':
+                    is_error_line = True
+                    break
+                else:
+                    opened_chunks.pop()
+            
+        t = []
+        for i in range(len(opened_chunks) - 1, -1, -1):
+            if opened_chunks[i] == '(':
+                t.append(')')
+
+            if opened_chunks[i] == '[':
+                t.append(']')
+
+            if opened_chunks[i] == '{':
+                t.append('}')
+
+            if opened_chunks[i] == '<':
+                t.append('>')
+        
         current_score = 0        
-        for c in s:
+        for c in t:
             current_score = current_score * 5 + score_table[c]
         scores.append(current_score)
         
     scores = sorted(scores)
     final_score = 0
     if len(scores) > 1:
-        final_score = scores[len(scores) // 2 + 1]
+        final_score = scores[len(scores) // 2]
     else:
         final_score = scores[0]
                 
@@ -130,7 +173,7 @@ if __name__ == '__main__':
     
     expected = 26397
     test_lines = get_lines('test_input.txt')
-    score = get_score(test_lines, score_table)
+    score = get_corrupted_lines_score(test_lines, score_table)
     if score == expected:
         print('ok')
     else:
@@ -138,7 +181,7 @@ if __name__ == '__main__':
         
     expected = 399153
     lines = get_lines('input.txt')
-    score = get_score(lines, score_table)
+    score = get_corrupted_lines_score(lines, score_table)
     if score == expected:
         print('ok')
     else:
@@ -160,6 +203,3 @@ if __name__ == '__main__':
     
     score = get_incomplete_lines_score(lines, score_table)
     print(score)
-    
-    print()
-    print()
