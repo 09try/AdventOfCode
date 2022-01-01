@@ -9,99 +9,104 @@ def print_grid(grid):
     r = ''
     for row in range(len(grid)):
         for col in range(len(grid[0])):
-            r += str(grid[row][col]).zfill(3) + ' '
+            r += str(grid[row][col]) + ' '
         r += '\n'
     print(r)
     
-def update_energy_levels(grid):
-    new_grid = grid
+def flash_coordinates(grid):
     for row in range(len(grid)):
         for col in range(len(grid[0])):
-            new_grid[row][col] += 1
-            
-    return new_grid
+            if grid[row][col] > 9:
+                
+                # update adjacent coords
+                up = False
+                down = False
+                left = False
+                right = False
 
-def get_count_of_flashes(grid, steps):
+                # up
+                if row - 1 >= 0:
+                    grid[row - 1][col] += 1
+                    up = True
+                
+                # down
+                if row + 1 < len(grid):
+                    grid[row + 1][col] += 1
+                    down = True
+                
+                # left    
+                if col - 1 >= 0:
+                    grid[row][col - 1] += 1
+                    left = True
+                
+                # right
+                if col + 1 < len(grid[row]):
+                    grid[row][col + 1] += 1
+                    right = True
+                
+                # up left
+                if up and left:
+                    grid[row - 1][col - 1] += 1
+                    
+                # up right
+                if up and right:
+                    grid[row - 1][col + 1] += 1
+                    
+                # down left
+                if down and left:
+                    grid[row + 1][col - 1] += 1
+                
+                # down right
+                if down and right:
+                    grid[row + 1][col + 1] += 1
+                        
+    return grid
     
+def get_count_of_flashes(grid, steps):
     flashes_count = 0
     
+    print('before any steps')
     print_grid(grid)
     
-    for _ in range(steps):
-        
+    for step in range(steps):
+
         # first increase all energy levels
-        new_grid = update_energy_levels(grid)
+        for row in range(len(grid)):
+            for col in range(len(grid[0])):
+                grid[row][col] += 1
+         
         
-        # if grid[row][col] > 9:
-        #     coordinates_to_flash.append([row, col])
-                
-        # # energy levels greater than 9 flash
-        # for coord in coordinates_to_flash:
-        #     row = coord[0]
-        #     col = coord[1]
-        #     grid[row][col] = 0
-            
-        #     # increase adjacent octopuses
-        #     up = False
-        #     down = False
-        #     left = False
-        #     right = False
-            
-        #     # up
-        #     if row - 1 >= 0:
-        #         grid[row - 1][col] += 1
-        #         up = True
-        #     # down
-        #     if row + 1 < len(grid):
-        #         grid[row + 1][col] += 1
-        #         down = True
-        #     # left    
-        #     if col - 1 <= len(grid[row]):
-        #         grid[row][col - 1] += 1
-        #         left = True
-        #     # right
-        #     if col + 1 < len(grid[row]):
-        #         grid[row][col + 1] += 1
-        #         right = True
-        #     # up left
-        #     if up and left:
-        #         grid[row - 1][col - 1] += 1
-        #     # up right
-        #     if up and right:
-        #         grid[row - 1][col + 1] += 1
-        #     # down left
-        #     if down and left:
-        #         grid[row + 1][col - 1] += 1
-        #     # down right
-        #     if down and right:
-        #         grid[row + 1][col + 1] += 1
-            
-        # # check again which should flash but don't flash the same twice
-        # for coord in coords_increased:
-        #     if coord not in coordinates_to_flash:
-        #         row = coord[0]
-        #         col = coord[1]
-        #         if grid[row][col] > 9:
-        #             grid[row][col] = 0
-                    
-        #             # increase adjacent octopuses
-        #             # ...
-        
-        
-        print_grid(new_grid)
+        for row in range(len(grid)):
+            for col in range(len(grid[0])):
+                if grid[row][col] > 9:
+                    grid[row][col] = 0
+                    flashes_count += 1
+                       
+        print('after step', step + 1)
+        print_grid(grid)
     
     return flashes_count
 
 if __name__ == '__main__':
     
     test_grid = get_grid('test_input.txt')
-    steps = 100
-    expected = 1656
+    steps = 10
+    expected = 204
     flashes_count = get_count_of_flashes(test_grid, steps)
+    print(flashes_count)
     if flashes_count == expected:
         print('ok')
     else:
         print('error')
+        
+    # steps = 100
+    # expected = 1656
+    # flashes_count = get_count_of_flashes(test_grid, steps)
+    # print(flashes_count)
+    # if flashes_count == expected:
+    #     print('ok')
+    # else:
+    #     print('error')
         
         
     # grid = get_grid('input.txt')
