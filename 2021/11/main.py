@@ -16,8 +16,8 @@ def print_grid(grid):
 def get_count_of_flashes(grid, steps):
     flashes_count = 0
     
-    print('before any steps')
-    print_grid(grid)
+    #print('before any steps')
+    #print_grid(grid)
     
     for step in range(steps):
 
@@ -114,18 +114,19 @@ def get_count_of_flashes(grid, steps):
                         if (row + 1, col + 1) not in flashed_coords and (row + 1, col + 1) not in coords_to_flash:
                             coords_to_flash.append((row + 1, col + 1))
                     
-        # niektore ktore nabrali > 9 pocas adjacent update
-        # neupdatovali adjacent coordinates
-                
+        c = 0 
         for row in range(len(grid)):
             for col in range(len(grid[0])):
                 if grid[row][col] > 9:
                     grid[row][col] = 0
                     flashes_count += 1
-                       
-        
+                c += grid[row][col]
+                
         print('after step', step + 1)
         print_grid(grid)
+        
+        if c == 0:
+            print('all coords are synchronized')
     
     return flashes_count
 
@@ -141,18 +142,34 @@ if __name__ == '__main__':
     else:
         print('error')
         
-    # steps = 20
-    # expected = 1656
-    # flashes_count = get_count_of_flashes(test_grid, steps)
-    # print(flashes_count)
-    # if flashes_count == expected:
-    #     print('ok')
-    # else:
-    #     print('error')
+    test_grid = get_grid('test_input.txt')
+    steps = 100
+    expected = 1656
+    flashes_count = get_count_of_flashes(test_grid, steps)
+    print(flashes_count)
+    if flashes_count == expected:
+        print('ok')
+    else:
+        print('error')
         
         
-    # grid = get_grid('input.txt')
-    # steps = 100
-    # flashes_count = get_count_of_flashes(grid, steps)
-    # print(flashes_count)
+    grid = get_grid('input.txt')
+    steps = 100
+    expected = 1673
+    flashes_count = get_count_of_flashes(grid, steps)
+    print(flashes_count)
+    if flashes_count == expected:
+        print('ok')
+    else:
+        print('error')
+        
+    grid = get_grid('input.txt')
+    steps = 279
+    expected = 1673
+    flashes_count = get_count_of_flashes(grid, steps)
+    print(flashes_count)
+    if flashes_count == expected:
+        print('ok')
+    else:
+        print('error')
     
