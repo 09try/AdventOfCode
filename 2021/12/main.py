@@ -7,6 +7,33 @@ class Vertex:
         if v not in self.neighbors:
             self.neighbors.append(v)
             self.neighbors.sort()
+            
+class Graph:
+    def __init__(self):
+        self.vertices = {}
+    
+    def add_vertex(self, vertex):
+        if isinstance(vertex, Vertex) and vertex.name not in self.vertices:
+            self.vertices[vertex.name] = vertex
+            return True
+        else:
+            return False
+        
+    def add_edge(self, u, v):
+        if u in self.vertices and v in self.vertices:
+            for key, value in self.vertices.items():
+                if key == u:
+                    value.add_neighbor(v)
+                if key == v:
+                    value.add_neighbor(u)
+            return True
+        else:
+            return False
+        
+    def print_graph(self):
+        for key in sorted(list(self.vertices.keys())):
+            print(key + str(self.vertices[key].neighbors))
+        
 
 def get_map(path):
     f = open(path)
@@ -15,8 +42,16 @@ def get_map(path):
     return lines
 
 def get_all_paths(map):
-    graph = []
-
+    g = Graph()
+    
+    for line in map:
+        p = line.split('-')
+        g.add_vertex(Vertex(p[0]))
+        g.add_vertex(Vertex(p[1]))
+        g.add_edge(p[0], p[1])
+            
+    g.print_graph()
+    
 if __name__ == '__main__':
     
     test_maps = ['test_input1.txt', 'test_input2.txt', 'test_input3.txt']
@@ -29,3 +64,6 @@ if __name__ == '__main__':
             print('ok')
         else:
             print('error')
+            
+        print()
+        print()
