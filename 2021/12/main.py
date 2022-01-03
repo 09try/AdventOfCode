@@ -60,25 +60,28 @@ class Graph:
                     queue.append(value)
                     visited[key] = True
                     
-    def print_all_paths_from_src_to_dst_util(self, src, dst, visited, path):
+    def print_all_paths_from_src_to_dst_util(self, src, dst, visited, path, counter):
         visited[src.name] = True
         path.append(src.name)
         
         if src == dst:
-            #print(len(path))
-            print(path)
+            counter += 1
         else:
-             for neighbor in src.neighbors:
-                 if visited[neighbor] == False:
-                     next = self.vertices[neighbor]
-                     self.print_all_paths_from_src_to_dst_util(next, dst, visited, path)
-                     
-                 if neighbor.isupper():
-                    visited[neighbor] = False
-           
-        # tu nema byt pop, ale treba sa vratit naspät          
+            for neighbor in src.neighbors:
+                if visited[neighbor] == False:
+                    next = self.vertices[neighbor]
+                    counter = self.print_all_paths_from_src_to_dst_util(next, dst, visited, path, counter)
+                else:
+                    if neighbor.isupper():
+                        visited[neighbor] = False
+                        next = self.vertices[neighbor]
+                        counter = self.print_all_paths_from_src_to_dst_util(next, dst, visited, path, counter)
+                    else:
+                        visited[src.name] = False
+        
         path.pop()
         visited[src.name] = False
+        return counter
         
     def print_path_from_src_to_dst(self, src, dst):
         
@@ -90,7 +93,9 @@ class Graph:
         # create an array to store paths
         path = []
         
-        self.print_all_paths_from_src_to_dst_util(src, dst, visited, path)
+        counter = 0
+        c = self.print_all_paths_from_src_to_dst_util(src, dst, visited, path, counter)
+        return c
         
 def get_map(path):
     f = open(path)
@@ -113,15 +118,16 @@ def get_all_paths(map):
     
     src = g.vertices['start']
     dst = g.vertices['end']
-    g.print_path_from_src_to_dst(src, dst)
+    c = g.print_path_from_src_to_dst(src, dst)
+    return c
     
 if __name__ == '__main__':
     
     test_maps = ['test_input1.txt', 'test_input2.txt', 'test_input3.txt']
     expected = [10, 19, 226]
     
-    test_maps = ['test_input1.txt']
-    expected = [10]
+    test_maps = ['test_input1.txt', 'test_input2.txt']
+    expected = [10, 19]
     
     for test_input, result in zip(test_maps, expected):
         test_map = get_map(test_input)
@@ -131,5 +137,4 @@ if __name__ == '__main__':
         else:
             print('error')
             
-        print()
         print()
