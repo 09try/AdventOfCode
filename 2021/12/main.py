@@ -66,6 +66,9 @@ class Graph:
         
         if src == dst:
             counter += 1
+            
+            
+            
         else:
             for neighbor in src.neighbors:
                 if visited[neighbor] == False:
@@ -77,7 +80,7 @@ class Graph:
                         next = self.vertices[neighbor]
                         counter = self.print_all_paths_from_src_to_dst_util(next, dst, visited, path, counter)
                     else:
-                        visited[src.name] = False
+                        visited[src.name] = True
         
         path.pop()
         visited[src.name] = False
@@ -126,15 +129,19 @@ if __name__ == '__main__':
     test_maps = ['test_input1.txt', 'test_input2.txt', 'test_input3.txt']
     expected = [10, 19, 226]
     
-    test_maps = ['test_input1.txt', 'test_input2.txt']
-    expected = [10, 19]
-    
     for test_input, result in zip(test_maps, expected):
         test_map = get_map(test_input)
         count = get_all_paths(test_map)
+        print('expected {} received {}'.format(result, count))
         if count == result:
             print('ok')
         else:
             print('error')
             
-        print()
+    map = get_map('input.txt')
+    count = get_all_paths(map)
+    print(count)
+    if count == 3495:
+        print('ok')
+    else:
+        print('error')
