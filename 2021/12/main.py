@@ -66,9 +66,6 @@ class Graph:
         
         if src == dst:
             counter += 1
-            
-            
-            
         else:
             for neighbor in src.neighbors:
                 if visited[neighbor] == False:
@@ -99,6 +96,52 @@ class Graph:
         counter = 0
         c = self.print_all_paths_from_src_to_dst_util(src, dst, visited, path, counter)
         return c
+    
+    def print_all_paths_from_src_to_dst_util_part_two(self, src, dst, visited, path, counter, visited_first_time):
+        visited[src.name] = True
+        path.append(src.name)
+        
+        if src == dst:
+            # if counter == 100 there is twice start
+            print(path)
+            counter += 1
+        else:
+            for neighbor in src.neighbors:
+                if visited[neighbor] == False:
+                    next = self.vertices[neighbor]
+                    counter = self.print_all_paths_from_src_to_dst_util_part_two(next, dst, visited, path, counter, visited_first_time)
+                else:
+                    if neighbor.isupper():
+                        visited[neighbor] = False
+                        next = self.vertices[neighbor]
+                        counter = self.print_all_paths_from_src_to_dst_util_part_two(next, dst, visited, path, counter, visited_first_time)
+                    elif visited_first_time == False:
+                        visited_first_time = True
+                        
+                        visited[neighbor] = False
+                        next = self.vertices[neighbor]
+                        counter = self.print_all_paths_from_src_to_dst_util_part_two(next, dst, visited, path, counter, visited_first_time)
+                    else:
+                        visited[src.name] = True
+        
+        path.pop()
+        visited[src.name] = False
+        return counter
+    
+    def print_path_from_src_to_dst_part_two(self, src, dst):
+        
+        # mark all the vertices as not visited
+        visited = {}
+        for key, value in self.vertices.items():
+            visited[key] = False
+            
+        # create an array to store paths
+        path = []
+        
+        counter = 0
+        visited_first_time = False
+        c = self.print_all_paths_from_src_to_dst_util_part_two(src, dst, visited, path, counter, visited_first_time)
+        return c
         
 def get_map(path):
     f = open(path)
@@ -123,6 +166,24 @@ def get_all_paths(map):
     dst = g.vertices['end']
     c = g.print_path_from_src_to_dst(src, dst)
     return c
+
+def get_all_paths_part_two(map):
+    g = Graph()
+    
+    for line in map:
+        p = line.split('-')
+        u = Vertex(p[0])
+        v = Vertex(p[1])
+        g.add_vertex(u)
+        g.add_vertex(v)
+        g.add_edge(u.name, v.name)
+            
+    #g.print_graph()
+    
+    src = g.vertices['start']
+    dst = g.vertices['end']
+    c = g.print_path_from_src_to_dst_part_two(src, dst)
+    return c
     
 if __name__ == '__main__':
     
@@ -145,3 +206,20 @@ if __name__ == '__main__':
         print('ok')
     else:
         print('error')
+        
+        
+    # part two
+    test_maps = ['test_input1.txt']
+    expected = [103]
+
+    #test_maps = ['test_input1.txt', 'test_input2.txt']
+    #expected = [103, 3509]
+
+    for test_input, result in zip(test_maps, expected):
+        test_map = get_map(test_input)
+        count = get_all_paths_part_two(test_map)
+        print('expected {} received {}'.format(result, count))
+        if count == result:
+            print('ok')
+        else:
+            print('error')
