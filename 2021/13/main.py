@@ -1,37 +1,31 @@
 from os import error
 
-
 def read_instructions(path):
     f = open(path)
     lines = f.readlines()
     f.close()
     
-    fold_instructions, _paper = [], []
+    fold_instructions, dots = [], []
     max_x, max_y = 0, 0
     for line in lines:
-        try:
-            _ = int(line[0])
+        if line.startswith('f'):
+            line = line.replace('\n', '')
+            split_result = line.split(' ')[2].split('=')
+            fold_instructions.append((split_result[0], int(split_result[1])))
+        else:
             split_result = line.replace('\n', '').split(',')
-            x, y  = int(split_result[0]), int(split_result[1])
-            max_x = max(max_x, x)
-            max_y = max(max_y, y)
-            _paper.append([x, y])
-        except:
-            if line[0] == 'f':
-                line = line.replace('\n', '')
-                split_result = line.split(' ')[2].split('=')
-                fold_instructions.append((split_result[0], int(split_result[1])))
-    paper = []
-    for _ in range(max_y + 1):
-        row = []
-        for _ in range(max_x + 1):
-            row.append('.')
-        paper.append(row)
+            if len(split_result) > 1:
+                x, y  = int(split_result[0]), int(split_result[1])
+                max_x = max(max_x, x)
+                max_y = max(max_y, y)
+                dots.append([x, y])
         
-    for dot in _paper:
+    paper = [['.' for _ in range(max_x + 1)] for _ in range(max_y + 1)]
+        
+    for dot in dots:
         col, row = dot
         paper[row][col] = '#'
-            
+        
     return fold_instructions, paper
 
 def do_fold(fold_instruction, paper):
@@ -41,34 +35,17 @@ def do_fold(fold_instruction, paper):
         first_half = [row[:fold_instruction[1]] for row in paper]
         second_half = [row[fold_instruction[1] + 1:] for row in paper]
         
-        #print(len(first_half[0]))
-        #print(len(second_half[0]))
-        if len(first_half[0]) != len(second_half[0]):
-            # for row in second_half:
-            #     row.append('#')
-                
-            for row in range(len(first_half[0])):
-                first_half[row] = first_half[row][:-1]
-        
-        # for row in range(len(first_half)):
-        #     _col = 0
-        #     for col in range(len(first_half[row]) -1 , -1, -1):
-        #         if first_half[row][col] == '#':
-        #             second_half[row][_col] = '#'
-        #         _col += 1
-                
         for row in range(len(first_half)):
             _col = 0
-            for col in range(len(first_half[row]) -1 , -1, -1):
+            for col in range(len(first_half[row]) - 1, -1, -1):
                 if first_half[row][col] == '#':
                     try:
                         second_half[row][_col] = '#'
                     except:
                         print(error)
                 _col += 1
-        
+
         paper = second_half
-        
         
     elif fold_instruction[0] == 'y':
         # horizontal fold
@@ -88,21 +65,85 @@ def do_fold(fold_instruction, paper):
         
     return paper
 
+def do_fold2(fold_instruction, paper):
+    
+    output = []
+    
+    if fold_instruction[0] == 'x':
+        # vertical
+        col = fold_instruction[1]
+    
+        first_half = []
+        second_half = []
+        
+        for i in range(len(paper)):
+            row_first_half = []
+            row_second_half = []
+            for j in range(len(paper[i])):
+                if j < col:
+                    row_first_half.append(paper[i][j])
+                if j > col:
+                    row_second_half.append(paper[i][j])
+                
+            first_half.append(row_first_half)
+            second_half.append(row_second_half)
+            
+        if len(first_half) != len(second_half):
+            print()
+            
+        if len(first_half[0]) != len(second_half[0]):
+            print
+            
+        # fold left
+        for i in range(len(second_half)):
+            second_half[i].reverse()
+            
+        for i in range(len(second_half)):
+            for j in range(len(second_half[i])):
+                if first_half[i][j] == '#':
+                    second_half[i][j] = '#'
+                    
+        output = second_half
+    
+    elif fold_instruction[0] == 'y':
+        # horizontal
+        row = fold_instruction[1]
+        
+        first_half = paper[:row][:]
+        second_half = paper[1 + row:][:]
+        
+        _second_half_tmp = []
+        
+        for i in range(len(second_half) - 1, -1, -1):
+            r = second_half[i]
+            _second_half_tmp.append(r)
+        
+        for i in range(len(first_half)):
+            for j in range(len(first_half[i])):
+                if _second_half_tmp[i][j] == '#':
+                    first_half[i][j] = '#'
+                    
+        output = first_half
+        
+    return output
+
 if __name__ == '__main__':
     
     paper = []
     fold_instructions, paper = read_instructions('test_input.txt')
-    
-    for fold_instruction in fold_instructions:
+    first_expected = 17
+    for i, fold_instruction in enumerate(fold_instructions):
         paper = do_fold(fold_instruction, paper)
         dots_count = sum(len([c for c in row if c == '#']) for row in paper)
-        print(dots_count)
-        
-    print()        
+        if i == 0:
+            if dots_count == first_expected:
+                print('ok')
+            else:
+                print('error')
+        #print(dots_count)
         
     paper = []
     fold_instructions, paper = read_instructions('input.txt')
-    
     first_expected = 602
     for i, fold_instruction in enumerate(fold_instructions):
         paper = do_fold(fold_instruction, paper)
@@ -112,7 +153,7 @@ if __name__ == '__main__':
                 print('ok')
             else:
                 print('error')
-        print(dots_count)
+        #print(dots_count)
         
     for row in range(len(paper)):
         for col in range(len(paper[row])):
