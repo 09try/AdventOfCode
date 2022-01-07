@@ -32,12 +32,17 @@ def do_fold(fold_instruction, paper):
     
     if fold_instruction[0] == 'x':
         # vertical fold
-        first_half = [row[:fold_instruction[1]] for row in paper]
-        second_half = [row[fold_instruction[1] + 1:] for row in paper]
+        x = fold_instruction[1]
         
-        for row in range(len(first_half)):
+        first_half = [row[:x] for row in paper]
+        second_half = [row[(x + 1):] for row in paper]
+        
+        r = len(first_half)
+        c = len(first_half[0])
+     
+        for row in range(r):
             _col = 0
-            for col in range(len(first_half[row]) - 1, -1, -1):
+            for col in range(c - 1, -1, -1):
                 if first_half[row][col] == '#':
                     try:
                         second_half[row][_col] = '#'
@@ -49,8 +54,20 @@ def do_fold(fold_instruction, paper):
         
     elif fold_instruction[0] == 'y':
         # horizontal fold
-        first_half = paper[:fold_instruction[1]][:]
-        second_half = paper[fold_instruction[1] + 1:][:]
+        
+        y = fold_instruction[1]
+        
+        first_half = paper[:y][:]
+        second_half = paper[y + 1:][:]
+        
+        first_half = paper[:y]
+        second_half = paper[y + 1:][::-1]
+        
+        if len(first_half[0]) > len(second_half[0]):
+            print('handle uneven fold 1')
+
+        if len(first_half[0]) < len(second_half[0]):
+            print('handle uneven fold 2')
         
         _row = len(second_half) - 1
         for row in range(len(second_half)):
