@@ -28,6 +28,48 @@ def read_instructions(path):
         
     return fold_instructions, paper
 
+def fold_paper(fold_instruction, paper):
+    output  = []
+    if fold_instruction[0] == 'x':
+        x = fold_instruction[1]
+        
+        left = [r[:x] for r in paper]
+        right = [r[x+1:][::-1] for r in paper]
+        
+        even_out = 0
+        if len(left[0]) != len(right[0]):
+            print('uneven vertical split')
+            even_out = 1
+            
+        for r in range(len(left)):
+            for c in range(len(left[r]) - even_out):
+                if right[r][c] == '#':
+                    _c = c + even_out
+                    left[r][_c] = '#'
+                    
+        output = left
+        
+    elif fold_instruction[0] == 'y':
+        y = fold_instruction[1]
+        
+        top = paper[:y]
+        bottom = paper[y+1:][::-1]
+        
+        even_out = 0
+        if len(top) != len(bottom):
+            print('uneven horizontal split')
+            even_out = len(top) - len(bottom)
+            
+        for r in range(len(top) - even_out):
+            for c in range(len(top[r])):
+                if bottom[r][c] == '#':
+                    top[r + even_out][c] = '#'
+                    
+        output = top
+        
+    return output
+        
+
 def do_fold(fold_instruction, paper):
     
     if fold_instruction[0] == 'x':
@@ -150,7 +192,7 @@ if __name__ == '__main__':
     fold_instructions, paper = read_instructions('test_input.txt')
     first_expected = 17
     for i, fold_instruction in enumerate(fold_instructions):
-        paper = do_fold(fold_instruction, paper)
+        paper = fold_paper(fold_instruction, paper)
         dots_count = sum(len([c for c in row if c == '#']) for row in paper)
         if i == 0:
             if dots_count == first_expected:
@@ -163,7 +205,7 @@ if __name__ == '__main__':
     fold_instructions, paper = read_instructions('input.txt')
     first_expected = 602
     for i, fold_instruction in enumerate(fold_instructions):
-        paper = do_fold(fold_instruction, paper)
+        paper = fold_paper(fold_instruction, paper)
         dots_count = sum(len([c for c in row if c == '#']) for row in paper)
         if i == 0:
             if dots_count == first_expected:
