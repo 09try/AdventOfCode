@@ -2,6 +2,7 @@ import time
 
 # try linked list
 # try generator
+# try circular linked list - https://realpython.com/linked-lists-python/
 
 class Node:
     def __init__(self, data):
@@ -43,6 +44,18 @@ class LinkedList:
             pass
         current_node.next = node
         
+class CircularLinkedList:
+    def __init__(self):
+        self.head = None
+        
+    def traverse(self, starting_point=None):
+        if starting_point is None:
+            starting_point = self.head
+        node = starting_point
+        while node is not None and (node.next != starting_point):
+            yield node
+            node = node.next
+        yield None
 
 def read_input(path):
     
@@ -119,14 +132,17 @@ def get_count2(polymer_template, pair_insertion_rules, number_of_steps, print_st
     return d[-1][1] - d[0][1]
 
 def get_count3(polymer_template, pair_insertion_rules, number_of_steps, print_steps=False):
-    start_time = time.time()
+    
+    new_pt = []
+    pt = polymer_template
+    pir = pair_insertion_rules
     
     for step in range(1, number_of_steps + 1):
         if print_steps:
             print('step', step)
-        
+            
     counts = {}
-    for n in polymer_template:
+    for n in new_pt:
         if n in counts:
             counts[n] += 1
         else:
@@ -134,8 +150,6 @@ def get_count3(polymer_template, pair_insertion_rules, number_of_steps, print_st
             
     d = sorted(counts.items(), key=lambda x: x[1])
     end_time = time.time()
-    diff_time = end_time - start_time
-    print('{} get_count3 seconds'.format(diff_time))
     return d[-1][1] - d[0][1]
 
 if __name__ == '__main__':
@@ -160,28 +174,28 @@ if __name__ == '__main__':
         
     print('------------------------------------------------------------')
         
-    expected = 1588
-    number_of_steps = 10
-    polymer_template, pair_insertion_rules = read_input('test_input.txt')
-    count = get_count2(polymer_template, pair_insertion_rules, number_of_steps)
-    if count == expected:
-        print('ok')
-    else:
-        print('error')
+    # expected = 1588
+    # number_of_steps = 10
+    # polymer_template, pair_insertion_rules = read_input('test_input.txt')
+    # count = get_count2(polymer_template, pair_insertion_rules, number_of_steps)
+    # if count == expected:
+    #     print('ok')
+    # else:
+    #     print('error')
         
-    expected = 3411
-    number_of_steps = 10
-    polymer_template, pair_insertion_rules = read_input('input.txt')
-    count = get_count2(polymer_template, pair_insertion_rules, number_of_steps)
-    if count == expected:
-        print('ok')
-    else:
-        print('error')
+    # expected = 3411
+    # number_of_steps = 10
+    # polymer_template, pair_insertion_rules = read_input('input.txt')
+    # count = get_count2(polymer_template, pair_insertion_rules, number_of_steps)
+    # if count == expected:
+    #     print('ok')
+    # else:
+    #     print('error')
         
     expected = 2188189693529
     number_of_steps = 40
     polymer_template, pair_insertion_rules = read_input('test_input.txt')
-    count = get_count(polymer_template, pair_insertion_rules, number_of_steps, print_steps=True)
+    count = get_count(polymer_template, pair_insertion_rules, number_of_steps, print_steps=False)
     if count == expected:
         print('ok')
     else:
