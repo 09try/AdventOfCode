@@ -14,4 +14,5 @@ https://adventofcode.com/
 - 11/24 **
 - 12/24 *
 - 13/24 **
-- 14/24 *
+- 14/24 ** second * with help
+- 15/24 
