@@ -1,3 +1,5 @@
+import sys
+
 def read_input(path):
     f = open(path, 'r')
     lines = [line.strip().replace('\n', '') for line in f.readlines()]
@@ -7,69 +9,36 @@ def read_input(path):
     
 def get_optimal_path_risk_level(cavern):
     
-    path = []
-    path.append([0, 0])
+    start = [0, 0]
+    end = [9, 9]
     
-    row = 0
-    col = 0
+    all_paths = get_all_paths(cavern, start, end, [start])
     
-    while row != 9 and col != 9:
+    min_risk_level = sys.maxint
+    for path in all_paths:
+        current_score = 0
+        for coord in path:
+            current_score += cavern[coord[0], coord[1]]
+        if current_score < min_risk_level:
+            min_risk_level = current_score
             
-        risk_level_up = 10
-        risk_level_down = -1
-        risk_level_left = -1
-        risk_level_right = -1
-        
-        # pridat kriterium celkovy risk level, nie len aktualny left, right, down, up
-        
-        # # up
-        # if row - 1 >= 0:
-        #     risk_level_up = cavern[row - 1][col]
-        
-        # down
-        if row + 1 < len(cavern[0]):
-            risk_level_down = cavern[row + 1][col]
-        
-        # left
-        if col - 1 >= 0:
-            risk_level_left = cavern[row][col - 1]
-        
-        # right
-        if col + 1 < len(cavern):
-            risk_level_right = cavern[row][col + 1]
+    return current_score
+
+def get_all_paths(cavern, current_pos, end, current_path):
+    if current_pos == end:
+        return [end]
+    else:
+        neighbours = [[-1, 0], [1, 0], [0, 1], [0 -1]]
+        for neighbour in neighbours:
+            row = current_pos[0] + neighbour[0]
+            col = current_pos[1] + neighbour[1]
             
-        p = [('up', risk_level_up)]
-        
-        if [row + 1, col] not in path and risk_level_down != -1:
-            p.append(('down', risk_level_down))
+            if [row, col] not in current_path:
+                if row >= 0 and row < len(cavern):
+                    if col >= 0 and col < len(cavern[0]):
+                        current_path.append([row, col])
+                        return [row, col] + get_all_paths(cavern, [row, col], end, current_path)
             
-        if [row, col - 1] not in path and risk_level_left != -1:
-            p.append(('left', risk_level_left))
-            
-        if [row, col + 1] not in path and risk_level_right != -1:
-            p.append(('right', risk_level_right))
-            
-        min = 0
-        for i in range(len(p)):
-            if p[i][1] < p[min][1]:
-                min = i
-                
-        dir = p[min][0]
-                
-        if dir == 'up':
-            path.append([row - 1, col])
-            row -= 1
-        elif dir == 'down':
-            path.append([row + 1, col])
-            row += 1
-        elif dir == 'left':
-            path.append([row, col - 1])
-            col -= 1
-        elif dir == 'right':
-            path.append([row, col + 1])
-            col += 1
-                
-    print()
             
 
 if __name__ == '__main__':
