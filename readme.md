@@ -16,3 +16,6 @@ https://adventofcode.com/
 - 13/24 **
 - 14/24 ** second * with help
 - 15/24 
+
+2020
+- 01/24 **
