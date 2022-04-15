@@ -39,56 +39,61 @@ def is_valid2(passport):
     
     split_result = passport.split(' ')
     
+    ok_field_count = 0
+    
     for _split_result in split_result:
         s = _split_result.split(':')
         
-        if s[0] == fields[0]:
+        if s[0] == 'byr':
             n = int(s[1])
-            if len(str(n)) != 4:
-                return False
-            if n < 1920 or n > 2002:
-                return False
-        elif s[0] == fields[1]:
+            if len(str(n)) == 4 and n >= 1920 and n <= 2002:
+                ok_field_count += 1
+        if s[0] == 'iyr':
             n = int(s[1])
-            if len(str(n)) != 4:
-                return False
-            if n < 2010 or n > 2020:
-                return False
-        elif s[0] == fields[2]:
+            if len(str(n)) == 4 and n >= 2010 and n <= 2020:
+                ok_field_count += 1
+        if s[0] == 'eyr':
             n = int(s[1])
-            if len(str(n)) != 4:
-                return False
-            if n < 2020 or n > 2030:
-                return False
-        elif s[0] == fields[3]:
+            if len(str(n)) == 4 and n >= 2020 and n <= 2030:
+                ok_field_count += 1
+        if s[0] == fields[3]:
             unit = s[1][-2:]
-            if unit != 'cm' and unit != 'in':
-                return False
-            value = int(s[1][:-2])
-            if unit == 'cm':
-                if value < 150 and value > 193:
-                    return False
-            if unit == 'in':
-                if value < 59 and value > 76:
-                    return False
-        elif s[0] == fields[4]:
+            if unit == 'cm' or unit == 'in':
+                value = int(s[1][:-2])
+                if unit == 'cm':
+                    if value >= 150 and value <= 193:
+                        ok_field_count += 1
+                if unit == 'in':
+                    if value >= 59 and value <= 76:
+                        ok_field_count += 1
+        if s[0] == 'hcl':
             v = s[1][1:]
-            if len(v) != 6:
-                return False
-            for c in v:
-                if c not in '0123456789abcdef':
-                    return False
-        elif s[0] == fields[5]:
+            if s[1][0] == '#' and len(v) == 6:
+                tmp = 0
+                for c in v:
+                    if c in '0123456789abcdef':
+                        tmp += 1
+                if tmp == len(v):
+                    ok_field_count += 1
+        if s[0] == fields[5]:
             allowed = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']
-            if s[1] not in allowed:
-                return False
-        elif s[0] == fields[6]:
-            if len(s[1]) != 9:
-                return False
-        elif s[0] == fields[7]:
+            if s[1] in allowed:
+                ok_field_count += 1
+        if s[0] == fields[6]:
+            if len(s[1]) == 9:
+                tmp = 0
+                for c in s[1]:
+                    if c in '0123456789':
+                        tmp += 1
+                if tmp == len(s[1]):
+                    ok_field_count += 1
+        if s[0] == fields[7]:
             pass
     
-    return True
+    if ok_field_count == 7:
+        return True
+    else:
+        return False
 
 def get_valid_count(passports):
     valid = 0
@@ -105,7 +110,7 @@ def get_valid_count2(passports):
             valid += 1
             
     return valid
-    
+
 if __name__ == '__main__':
 
     expected = 2
