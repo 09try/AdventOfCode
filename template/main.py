@@ -1,6 +1,6 @@
 def read_input(path):
     f = open(path, 'r')
-    lines = f.readlines()
+    lines = [line.strip() for line in f.readlines()]
     f.close()
     return lines
 
