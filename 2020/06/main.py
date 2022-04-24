@@ -25,11 +25,11 @@ def solve(lines):
     return sum_of_counts
 
 def solve2(lines):
-    
     answers = {}
     counts = []
     number_of_people_in_group = 0
     counter_of_yes_questions = 0
+    
     for line in lines:
         if line != '':
             for question in line:
@@ -50,8 +50,11 @@ def solve2(lines):
             answers = {}
             number_of_people_in_group = 0
       
-    if counter_of_yes_questions != 0:
-        counts.append(counter_of_yes_questions)
+    counter_of_yes_questions = 0
+    for key, value in answers.items():
+        if value == number_of_people_in_group:
+            counter_of_yes_questions += 1
+    counts.append(counter_of_yes_questions)
         
     sum_of_counts = sum(counts)
     return sum_of_counts
@@ -82,7 +85,7 @@ if __name__ == '__main__':
         print('fail')
         
     lines = read_input('input.txt')
-    expected = 0
+    expected = 3437
     actual = solve2(lines)
     print(actual)
     if expected == actual:
