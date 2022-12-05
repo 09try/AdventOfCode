@@ -11,7 +11,6 @@ if __name__ == '__main__':
     lines = read_input('test_input.txt')
     expected = 0
     actual = solve(lines)
-    print(actual)
     
     if expected == actual:
         print('ok')
@@ -21,7 +20,6 @@ if __name__ == '__main__':
     lines = read_input('input.txt')
     expected = 0
     actual = solve(lines)
-    print(actual)
     
     if expected == actual:
         print('ok')
