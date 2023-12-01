@@ -23,11 +23,23 @@ def solve(lines):
 
     return res
 
+def solve2(lines):
+    res = 0
+
+    for (x1, y1), (x2, y2) in lines:
+        if x1 > x2:
+            if y2 >= x1:
+                res += 1    
+        else:
+            if y1 >= x2:
+                res += 1
+
+    return res
+
 if __name__ == '__main__':
     lines = read_input('test_input.txt')
     expected = 2
     actual = solve(lines)
-    print(actual)
     
     if expected == actual:
         print('ok')
@@ -35,9 +47,26 @@ if __name__ == '__main__':
         print('fail')
         
     lines = read_input('input.txt')
-    expected = 0
+    expected = 530
     actual = solve(lines)
-    print(actual)
+    
+    if expected == actual:
+        print('ok')
+    else:
+        print('fail')
+
+    lines = read_input('test_input.txt')
+    expected = 4
+    actual = solve2(lines)
+    
+    if expected == actual:
+        print('ok')
+    else:
+        print('fail')
+
+    lines = read_input('input.txt')
+    expected = 903
+    actual = solve2(lines)
     
     if expected == actual:
         print('ok')
